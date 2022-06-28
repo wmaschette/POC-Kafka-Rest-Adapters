@@ -1,0 +1,21 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+  kafkaconsumer1:
+    image: evertonjuniti/kafka-consumer:latest
+    container_name: kafkaconsumer1
+    networks:
+      - kafka-network
+  kafkaconsumer2:
+    image: evertonjuniti/kafka-consumer:latest
+    container_name: kafkaconsumer2
+    networks:
+      - kafka-network
+  kafkaconsumer3:
+    image: evertonjuniti/kafka-consumer:latest
+    container_name: kafkaconsumer3
+    networks:
+      - kafka-network

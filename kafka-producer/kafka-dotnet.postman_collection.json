@@ -1,0 +1,40 @@
+{
+	"info": {
+		"_postman_id": "06a8418d-d617-4dc7-aa31-1c6000e529f0",
+		"name": "kafka-dotnet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1643164"
+	},
+	"item": [
+		{
+			"name": "POST Mensagens",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Mensagens\": 200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/v1/Kafka",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"Kafka"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
