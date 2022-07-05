@@ -4,8 +4,8 @@ networks:
     driver: bridge
 
 services:
-  kafkaconsumer1:
-    image: wmaschette/kafka-consumer:latest
-    container_name: consumer
+  consumer-api:
+    image: wmaschette/api-consumer:latest
+    container_name: consumer-api
     networks:
       - kafka-network

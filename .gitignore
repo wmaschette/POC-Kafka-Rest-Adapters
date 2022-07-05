@@ -11,3 +11,7 @@
 /kafka-producer/.vs/kafka-producer/config
 /kafka-producer/bin/Debug/net5.0
 /kafka-producer/obj
+/.vs
+/adapter-architecture/.vs
+/adapter-architecture/bin/Debug/netcoreapp3.1
+/adapter-architecture/obj

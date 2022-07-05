@@ -1,37 +1,36 @@
-﻿using Confluent.Kafka;
-using kafka_consumer.Interfaces;
+﻿using Api_Consumer.Interfaces;
+using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace kafka_consumer.Services
+namespace Api_Consumer.Services
 {
-    public class KafkaService : IKafkaService
+    public class KafkaListener : IKafkaListener
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<KafkaWorker> _logger;
         private readonly IConfiguration Configuration;
-        private readonly IClientService _clientService;
-        private readonly IDomainService _domainService;
         private ConsumerConfig _config;
+        private readonly IDomainService _domain;
 
-        public KafkaService(ILogger<Worker> logger, IConfiguration configuration, IClientService clientService, IDomainService domainService)
+        public KafkaListener(ILogger<KafkaWorker> logger, IConfiguration configuration, IDomainService domain)
         {
             _logger = logger;
             Configuration = configuration;
-            _clientService = clientService;
             _config = new ConsumerConfig
             {
                 BootstrapServers = Configuration["KafkaBootstrapServers"],
-                GroupId = "consumerGroupCaseC",
+                GroupId = "consumerGroupCaseD",
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 EnableAutoOffsetStore = false
             };
-            _domainService = domainService;
+            _domain = domain;
         }
 
-        public void consume(CancellationToken cancellationToken)
+        public async Task consume(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
                 $"Iniciando leitura do tópico: {Configuration["TopicName"]}");
@@ -47,25 +46,25 @@ namespace kafka_consumer.Services
                 {
                     while (true)
                     {
+                        _logger.LogInformation($"--------------- Listener {DateTime.Now.ToLongTimeString()} --------------");
                         resposta = consumer.Consume(cancellationToken);
-                        _logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
-                        $"Chave: {resposta.Message.Key}, " +
-                        $"Mensagem: {resposta.Message.Value}, " +
-                        $"offset: {resposta.Offset.Value}, " +
-                        $"partition: {resposta.Partition.Value}");
+                        //_logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
+                        //$"Chave: {resposta.Message.Key}, " +
+                        //$"Mensagem: {resposta.Message.Value}, " +
+                        //$"offset: {resposta.Offset.Value}, " +
+                        //$"partition: {resposta.Partition.Value}");
+
                         consumer.StoreOffset(resposta);
-                        executionCount++;
 
-                        //_domainService.Execute(Guid.Parse(resposta.Message.Value));
-                        _clientService.CallApi(Guid.Parse(resposta.Message.Value));
+                        await _domain.Execute(Guid.Parse(resposta.Message.Value));
 
-                        //if (executionCount >= 100)
-                        //{
-                        //    watch.Stop();
-                        //    var elapsedMs = watch.ElapsedMilliseconds;
-                        //    _logger.LogInformation(elapsedMs.ToString());
-                        //    break;
-                        //}
+                        if (executionCount >= 100)
+                        {
+                            watch.Stop();
+                            var elapsedMs = watch.ElapsedMilliseconds;
+                            _logger.LogInformation(elapsedMs.ToString());
+                            //break;
+                        }
                     }
                 }
                 catch (Exception ex)

@@ -16,7 +16,9 @@ namespace kafka_consumer
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton<IKafkaService, KafkaService>();
+                    services.AddTransient<IClientService, ClientService>();
+                    services.AddTransient<IKafkaService, KafkaService>();
+                    services.AddTransient<IDomainService, DomainService>();
                     services.AddHostedService<Worker>();
                 });
     }
