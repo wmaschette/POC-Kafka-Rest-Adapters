@@ -29,7 +29,7 @@ namespace Api_Consumer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<IDomainService, DomainService>();
+            services.AddSingleton<IDomainService, DomainService>();
             services.AddSingleton<IKafkaListener, KafkaListener>();
             services.AddHostedService<KafkaWorker>();
         }

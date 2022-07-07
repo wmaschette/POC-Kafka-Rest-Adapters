@@ -38,7 +38,6 @@ namespace Api_Consumer.Services
             using (IConsumer<string, string> consumer = new ConsumerBuilder<string, string>(_config).Build())
             {
                 consumer.Subscribe(Configuration["TopicName"]);
-                ConsumeResult<string, string> resposta = null;
 
                 int executionCount = 0;
                 var watch = Stopwatch.StartNew();
@@ -47,7 +46,7 @@ namespace Api_Consumer.Services
                     while (true)
                     {
                         _logger.LogInformation($"--------------- Listener {DateTime.Now.ToLongTimeString()} --------------");
-                        resposta = consumer.Consume(cancellationToken);
+                        var resposta = consumer.Consume(cancellationToken);
                         //_logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
                         //$"Chave: {resposta.Message.Key}, " +
                         //$"Mensagem: {resposta.Message.Value}, " +
@@ -58,11 +57,15 @@ namespace Api_Consumer.Services
 
                         await _domain.Execute(Guid.Parse(resposta.Message.Value));
 
+                        resposta = null;
+                        executionCount++;
+
                         if (executionCount >= 100)
                         {
+                            executionCount = 0;
                             watch.Stop();
-                            var elapsedMs = watch.ElapsedMilliseconds;
-                            _logger.LogInformation(elapsedMs.ToString());
+                            _logger.LogInformation(watch.ElapsedMilliseconds.ToString());
+                            watch.Restart();
                             //break;
                         }
                     }
