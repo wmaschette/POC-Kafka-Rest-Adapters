@@ -2,6 +2,6 @@ namespace kafka_producer.Models
 {
     public class Pedido
     {
-        public short Mensagens { get; set; }
+        public int Mensagens { get; set; }
     }
 }
