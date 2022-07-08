@@ -1,0 +1,25 @@
+services:
+  consumer-api-1:
+    image: wmaschette/api-consumer:latest
+    container_name: consumer-api-1
+    networks:
+      - kafka-network
+    ports:
+      - 5001:80
+      - 5002:443
+  consumer-api-2:
+    image: wmaschette/api-consumer:latest
+    container_name: consumer-api-2
+    networks:
+      - kafka-network
+    ports:
+      - 5011:80
+      - 5012:443
+  consumer-api-3:
+    image: wmaschette/api-consumer:latest
+    container_name: consumer-api-3
+    networks:
+      - kafka-network
+    ports:
+      - 5021:80
+      - 5022:443

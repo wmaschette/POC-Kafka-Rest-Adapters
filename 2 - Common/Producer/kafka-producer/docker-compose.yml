@@ -1,0 +1,14 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+    
+services:
+    kafka-producer:
+        image: wmaschette/kafka-producer:latest
+        container_name: kafka-producer
+        ports:
+            - 5000:80
+            - 5001:443
+        networks:
+            - kafka-network

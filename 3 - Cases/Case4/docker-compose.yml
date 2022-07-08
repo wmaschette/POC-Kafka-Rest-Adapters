@@ -1,0 +1,42 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+        kafkaconsumerproducer:
+            image: wmaschette/kafka-consumer-producer:latest
+            container_name: kafka-consumer-producer
+            networks:
+                - kafka-network
+            depends_on:
+                - rabbitmq
+
+        rabbitconsumer:
+            image: wmaschette/rabbit-consumer:latest
+            container_name: rabbit-consumer
+            networks:
+                - kafka-network
+            depends_on:
+                - rabbitmq
+    
+        apidomainrabbit:
+            image: wmaschette/api-domain-rabbit:latest
+            container_name: api-domain-rabbit
+            networks:
+                - kafka-network
+            ports:
+                - 5010:80
+                - 5011:443
+
+        rabbitmq:
+            image: rabbitmq:3-management-alpine
+            container_name: 'rabbitmq'
+            ports:
+                - 5672:5672
+                - 15672:15672
+            volumes:
+                - /c/temp/RabbitMq/Data:/var/lib/rabbitmq/teste/
+                - /c/temp/RabbitMq/Log:/var/log/rabbitmq
+            networks:
+                - kafka-network

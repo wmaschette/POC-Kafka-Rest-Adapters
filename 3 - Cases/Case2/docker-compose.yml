@@ -1,0 +1,20 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+    kafkaconsumerrequest:
+        image: wmaschette/kafka-consumer-request:latest
+        container_name: kafka-consumer-request
+        networks:
+            - kafka-network
+    
+    apidomain:
+        image: wmaschette/api-domain:latest
+        container_name: api-domain
+        ports:
+            - 5010:80
+            - 5011:443
+        networks:
+            - kafka-network

@@ -1,0 +1,11 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+        kafkaconsumerdomain:
+            image: wmaschette/kafka-consumer-domain:latest
+            container_name: kafka-consumer-domain
+            networks:
+                - kafka-network

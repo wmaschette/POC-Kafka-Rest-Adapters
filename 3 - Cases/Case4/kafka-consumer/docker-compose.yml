@@ -1,0 +1,21 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+  rabbitmq-network:
+    name: rabbitmq-network
+    driver: bridge
+
+services:
+  kafkaconsumer:
+    image: wmaschette/kafka-consumer:latest
+    container_name: kafka-consumer
+    networks:
+      - kafka-network
+
+  rabbitmqproducer:
+    image: wmaschette/kafka-consumer:latest
+    container_name: rabbitmq-producer
+    networks:
+      - rabbitmq-network  
