@@ -56,7 +56,7 @@ namespace kafka_consumer.Services
                         executionCount++;
 
                         await _clientService.CallApi(Guid.Parse(resposta.Message.Value));
-                        _logger.LogError($"----- Request Executado ----- {resposta.Message.Value}");
+                        _logger.LogInformation($"----- Request Executado ----- {resposta.Message.Value}");
 
                         //if (executionCount >= 100)
                         //{

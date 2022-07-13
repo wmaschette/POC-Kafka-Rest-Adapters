@@ -1,0 +1,17 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+    rabbitmq:
+        image: rabbitmq:3-management-alpine
+        container_name: 'rabbitmq'
+        ports:
+            - 5672:5672
+            - 15672:15672
+        volumes:
+            - /c/temp/RabbitMq/Data:/var/lib/rabbitmq/teste/
+            - /c/temp/RabbitMq/Log:/var/log/rabbitmq
+        networks:
+            - kafka-network

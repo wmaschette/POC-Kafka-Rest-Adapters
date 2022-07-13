@@ -1,5 +1,5 @@
-﻿using Confluent.Kafka;
-using kafka_consumer.Interfaces;
+﻿using Api_Consumer.Interfaces;
+using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,27 +7,27 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace kafka_consumer.Services
+namespace Api_Consumer.Services
 {
-    public class KafkaService : IKafkaService
+    public class KafkaListener : IKafkaListener
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<KafkaWorker> _logger;
         private readonly IConfiguration Configuration;
-        private readonly IClientService _clientService;
         private ConsumerConfig _config;
+        private readonly IRabbitMqListener _rabbitMqListener;
 
-        public KafkaService(ILogger<Worker> logger, IConfiguration configuration, IClientService clientService)
+        public KafkaListener(ILogger<KafkaWorker> logger, IConfiguration configuration, IRabbitMqListener rabbitMqListener)
         {
             _logger = logger;
+            _rabbitMqListener = rabbitMqListener;
             Configuration = configuration;
             _config = new ConsumerConfig
             {
                 BootstrapServers = Configuration["KafkaBootstrapServers"],
-                GroupId = "consumerGroupCaseC2",
+                GroupId = "consumerGroupCaseF",
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 EnableAutoOffsetStore = false
             };
-            _clientService = clientService;
         }
 
         public async Task consume(CancellationToken cancellationToken)
@@ -38,7 +38,6 @@ namespace kafka_consumer.Services
             using (IConsumer<string, string> consumer = new ConsumerBuilder<string, string>(_config).Build())
             {
                 consumer.Subscribe(Configuration["TopicName"]);
-                ConsumeResult<string, string> resposta = null;
 
                 int executionCount = 0;
                 var watch = Stopwatch.StartNew();
@@ -46,25 +45,29 @@ namespace kafka_consumer.Services
                 {
                     while (true)
                     {
-                        resposta = consumer.Consume(cancellationToken);
-                        _logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
-                        $"Chave: {resposta.Message.Key}, " +
-                        $"Mensagem: {resposta.Message.Value}, " +
-                        $"offset: {resposta.Offset.Value}, " +
-                        $"partition: {resposta.Partition.Value}");
+                        _logger.LogInformation($"--------------- Listener {DateTime.Now.ToLongTimeString()} --------------");
+                        var resposta = consumer.Consume(cancellationToken);
+                        //_logger.LogInformation($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} - " +
+                        //$"Chave: {resposta.Message.Key}, " +
+                        //$"Mensagem: {resposta.Message.Value}, " +
+                        //$"offset: {resposta.Offset.Value}, " +
+                        //$"partition: {resposta.Partition.Value}");
+
                         consumer.StoreOffset(resposta);
+                        await _rabbitMqListener.Produce(resposta.Message.Value);
+                        _logger.LogInformation($"Mensagem enviada para fila.");
+
+                        resposta = null;
                         executionCount++;
 
-                        await _clientService.CallApi(Guid.Parse(resposta.Message.Value));
-                        _logger.LogInformation($"----- Request Executado ----- {resposta.Message.Value}");
-
-                        //if (executionCount >= 100)
-                        //{
-                        //    watch.Stop();
-                        //    var elapsedMs = watch.ElapsedMilliseconds;
-                        //    _logger.LogInformation(elapsedMs.ToString());
-                        //    break;
-                        //}
+                        if (executionCount >= 100)
+                        {
+                            executionCount = 0;
+                            watch.Stop();
+                            _logger.LogInformation(watch.ElapsedMilliseconds.ToString());
+                            watch.Restart();
+                            //break;
+                        }
                     }
                 }
                 catch (Exception ex)

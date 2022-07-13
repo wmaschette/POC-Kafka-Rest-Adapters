@@ -56,7 +56,7 @@ namespace kafka_consumer.Services
                         executionCount++;
 
                         _rabbitMqService.PublishMessage(resposta.Message.Value);
-                        _logger.LogError($"----- Mensagem Publicada ----- {resposta.Message.Value}");
+                        _logger.LogInformation($"----- Mensagem Publicada ----- {resposta.Message.Value}");
 
                         //if (executionCount >= 100)
                         //{

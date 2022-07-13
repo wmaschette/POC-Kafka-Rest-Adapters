@@ -1,0 +1,14 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:    
+    apiconsumer:
+        image: wmaschette/adapters-application:latest
+        container_name: adapters-application
+        networks:
+            - kafka-network
+        ports:
+            - 5010:80
+            - 5011:443

@@ -1,0 +1,22 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+        consumerapiretry:
+            image: wmaschette/consumer-api-retry:latest
+            container_name: consumer-api-retry
+            networks:
+                - kafka-network
+            ports:
+                - 5010:80
+                - 5011:443
+
+        rabbitconsumerretry:
+            image: wmaschette/rabbit-consumer-retry:latest
+            container_name: rabbit-consumer-retry
+            networks:
+                - kafka-network
+            depends_on:
+                - rabbitmq
