@@ -40,23 +40,17 @@ Para realizar um teste simples, deve-se criar um tópico com 1 partição, mante
 Também não haverá problema caso queira realizar um teste com mais partições.
 
 ## Subida do cluster RabbitMQ
-Utilize a definição do script Docker Compose presente na pasta "1 - Items/kafka-cluster" e o seguinte comando para subir o cluster Kafka com 3 nós (lembre-se de executar este comando dentro da pasta "kafka-cluster"):
+Utilize a definição do script Docker Compose presente na pasta "1 - Items/rabbit-cluster" e o seguinte comando para subir o cluster RabbitMQ:
 
 `docker compose up -d`
 
 O cluster deverá subir com os seguintes containers:
 
-- zookeeper1 (na porta 22181)
-- zookeeper2 (na porta 23181)
-- kafka1 (na porta 24092 para acesso via rede interna e na porta 24192 para acesso via localhost)
-- kafka2 (na porta 25092 para acesso via rede interna e na porta 25192 para acesso via localhost)
-- kafka3 (na porta 26092 para acesso via rede interna e na porta 26192 para acesso via localhost)
-- kafka-ui (na porta 27080)
+- rabbitmq (na porta 15672)
 
-Você poderá abrir o kafka-ui que é uma interface para gerenciar os tópicos colocando o seguinte endereço no browser (Google Chrome, por exemplo): localhost: 27080
+Você poderá abrir o rabbit-ui que é uma interface para gerenciar os tópicos colocando o seguinte endereço no browser (Google Chrome, por exemplo): localhost: 15672
 
-Para realizar um teste simples, deve-se criar um tópico com 1 partição, mantendo as configurações default do tópico.
-Também não haverá problema caso queira realizar um teste com mais partições.
+Para realizar o teste os testes é necessário criar duas filas chamadas "teste" e "teste-retry".
 
 ## Producer
 
@@ -80,7 +74,8 @@ Para subir um container simples execute o comando (esteja dentro da pasta "2 - C
 Caminho: "./3 - Cases/Case1"
 
 1. Na pasta "kafka-consumer" há uma aplicação worker em .Net 5 subscrita no tópico principal contendo uma porta listener e toda regra de negócio específica ao domínio.
-![image-case1](./3 - Cases/Case1/Items/case1.png)
+
+![image-case1](./3%20-%20Cases/Case1/Items/case1.PNG)
 
 Para subir esta aplicação no Docker, você pode fazer o build com o seguinte comando (esteja dentro da pasta "kafka-consumer"):
 
@@ -95,7 +90,7 @@ Caminho: "./3 - Cases/Case2"
 
 1. Na pasta "kafka-consumer" há uma aplicação worker em .Net com porta Listener, sem regra de negócio e com uma chamada REST API
 2. Na pasta "api-domain" há uma aplicação com porta REST contendo toda regra de negócio específica ao domínio.
-![image-case2](./3 - Cases/Case2/Items/case2.png)
+![image-case2](./3%20-%20Cases/Case2/Items/case2.PNG)
 
 Se você quiser subir estas aplicações no Docker, você pode fazer o build com o seguinte comando:
 
@@ -111,7 +106,7 @@ Caminho: "./3 - Cases/Case3"
 
 1. Na pasta "adapter-architecture" há uma aplicação com 2 portas (REST + Listener), contendo toda regra de negócio específica ao domínio.
 2. Na pasta "kafka-consumer" há uma aplicação consumer para realizar chamadas fake para porta Rest da aplicação principal.
-![image-case3](./3 - Cases/Case3/Items/case3.png)
+![image-case3](./3%20-%20Cases/Case3/Items/case3.PNG)
 
 Se você quiser subir estas aplicações no Docker, você pode fazer o build com o seguinte comando:
 
@@ -128,7 +123,7 @@ Caminho: "./3 - Cases/Case4"
 1. Na pasta "kafka-consumer" há uma aplicação com porta listener para o tópico kafka e publicando em uma fila RabbitMQ
 2. Na pasta "rabbit-consumer" há uma aplicação listener da fila RabbitMQ e realizando chamada REST para API de domínio.
 3. Na pasta "api-domain" há uma aplicação com porta REST e contendo toda regra de negócio específica ao domínio.
-![image-case4](./3 - Cases/Case4/Items/case4.png)
+![image-case4](./3%20-%20Cases/Case4/Items/case4.PNG)
 
 Se você quiser subir estas aplicações no Docker, você pode fazer o build com o seguinte comando:
 
@@ -145,7 +140,7 @@ Caminho: "./3 - Cases/Case5"
 
 1. Na pasta "adapter-architecture" há uma aplicação com porta Rest e Listener, contendo toda regra de negócio específica ao domínio e uma estratégia de retentativa utilizando fila em RabbitMQ.
 2. Na pasta "rabbit-consumer" há uma aplicação listener da fila RabbitMQ e realizando chamada REST para API de domínio.
-![image-case5](./3 - Cases/Case5/Items/case5.png)
+![image-case5](./3%20-%20Cases/Case5/Items/case5.PNG)
 
 Se você quiser subir estas aplicações no Docker, você pode fazer o build com o seguinte comando:
 
@@ -160,7 +155,7 @@ E para subir os containers, execute o comando:
 Caminho: "./3 - Cases/Case6"
 
 1. Na pasta "adapter-architecture" há uma aplicação contendo porta uma REST e duas portas Listener (uma para o tópico e outra para a fila), contendo toda regra de negócio específica ao domínio e uma estratégia de retentativa utilizando fila em RabbitMQ. 
-![image-case6](./3 - Cases/Case6/Items/case6.png)
+![image-case6](./3%20-%20Cases/Case6/Items/case6.PNG)
 
 Se você quiser subir estas aplicações no Docker, você pode fazer o build com o seguinte comando:
 
