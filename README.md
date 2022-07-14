@@ -39,6 +39,25 @@ Você poderá abrir o kafka-ui que é uma interface para gerenciar os tópicos c
 Para realizar um teste simples, deve-se criar um tópico com 1 partição, mantendo as configurações default do tópico.
 Também não haverá problema caso queira realizar um teste com mais partições.
 
+## Subida do cluster RabbitMQ
+Utilize a definição do script Docker Compose presente na pasta "1 - Items/kafka-cluster" e o seguinte comando para subir o cluster Kafka com 3 nós (lembre-se de executar este comando dentro da pasta "kafka-cluster"):
+
+`docker compose up -d`
+
+O cluster deverá subir com os seguintes containers:
+
+- zookeeper1 (na porta 22181)
+- zookeeper2 (na porta 23181)
+- kafka1 (na porta 24092 para acesso via rede interna e na porta 24192 para acesso via localhost)
+- kafka2 (na porta 25092 para acesso via rede interna e na porta 25192 para acesso via localhost)
+- kafka3 (na porta 26092 para acesso via rede interna e na porta 26192 para acesso via localhost)
+- kafka-ui (na porta 27080)
+
+Você poderá abrir o kafka-ui que é uma interface para gerenciar os tópicos colocando o seguinte endereço no browser (Google Chrome, por exemplo): localhost: 27080
+
+Para realizar um teste simples, deve-se criar um tópico com 1 partição, mantendo as configurações default do tópico.
+Também não haverá problema caso queira realizar um teste com mais partições.
+
 ## Producer
 
 Na pasta "2 - Common/Producer/kafka-producer" há uma aplicação em .Net 5 com uma interface de API para que você consiga postar quantas mensagens quer inserir no tópico "teste".
